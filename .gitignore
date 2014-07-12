@@ -1,2 +1,4 @@
 *.pyc
 .DS_Store
+dist/
+midi_piano.egg-info/
