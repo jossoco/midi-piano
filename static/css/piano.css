@@ -7,14 +7,14 @@
   border: 1px solid #000;
   border-bottom-width: 2px;
   border-top-width: 2px;
-  cursor: hand;
+  cursor: pointer;
 }
 
 .black-key {
   position: absolute;
   z-index: 1000;
   background-color: #000;
-  cursor: hand;
+  cursor: pointer;
 }
 
 .white-key.active {
