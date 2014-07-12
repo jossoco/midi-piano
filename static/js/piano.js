@@ -73,7 +73,7 @@ var Piano = {
 
     for (var i = 0; i < this.WHITE_KEY_COUNT; i++) {
       var note = this.WHITE_KEY_NOTES[i];
-      key = this.drawWhiteKey(note);
+      var key = this.drawWhiteKey(note);
   
       var nextWhiteNote = this.WHITE_KEY_NOTES[i+1];
       if (nextWhiteNote > note + 1) {
