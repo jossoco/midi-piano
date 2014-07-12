@@ -1,0 +1,40 @@
+#piano {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+}
+
+.white-key {
+  float: left;
+  height: 100px;
+  width: 22px;
+  border: 1px solid #000;
+  border-bottom-width: 2px;
+  border-top-width: 2px;
+  cursor: hand;
+}
+
+.black-key {
+  position: absolute;
+  z-index: 1000;
+  background-color: #000;
+  height: 80px;
+  width: 20px;
+  cursor: hand;
+}
+
+.white-key.active {
+  background-color: #ff99cc;
+}
+
+.black-key.active {
+  background-color: #990033;
+}
+
+.white-key:first-child {
+  border-left-width: 2px;
+}
+
+.white-key:last-child {
+  border-right-width: 2px;
+}
