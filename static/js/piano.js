@@ -26,31 +26,32 @@ var Piano = {
     var padding = Math.floor(docWidth * 0.02);
     var availWidth = docWidth - padding;
 
+    this.borderWidth = 2;
     this.whiteKeyWidth = Math.floor(availWidth / this.WHITE_KEY_COUNT) - 2;
     this.whiteKeyHeight = Math.floor(this.whiteKeyWidth * 4.5);
-    this.blackKeyWidth = this.whiteKeyWidth - 2;
+    this.blackKeyWidth = this.whiteKeyWidth - this.borderWidth;
     this.blackKeyHeight = Math.floor(this.whiteKeyHeight * 0.8);
-    this.blackKeyOffset = Math.floor(this.whiteKeyWidth * 0.01);
+    this.blackKeyOffset = Math.floor(this.whiteKeyWidth / 2);
     this.padding = Math.floor(padding / 2);
   },
 
   playKey: function (event) {
     $('.active').removeClass('active');
-    var key = event.target;
-    var keyNote = key.className.match(' k-(.*)')[1];
+    var key = $(event.target);
+    var keyNote = key.attr('note');
 
-    $(key).addClass('active');
+    key.addClass('active');
     MIDI.noteOn(0, parseInt(keyNote), 127, 0);
 
     setTimeout(function () {
-      $(key).removeClass('active');
+      key.removeClass('active');
     }, 200);
   },
 
   drawBlackKey: function (note, adjacentKey) {
     var offset = $(adjacentKey).offset();
-    var key = $('<div class="black-key k-' + note + '"></div>');
-    key.css('left', (offset.left - this.blackKeyOffset) + 'px');
+    var key = $('<div class="black-key" note="' + note + '"></div>');
+    key.css('left', (offset.left - this.padding + this.borderWidth + this.blackKeyOffset) + 'px');
     key.css('width', this.blackKeyWidth);
     key.css('height', this.blackKeyHeight);
     this.piano.append(key);
@@ -58,7 +59,7 @@ var Piano = {
   },
 
   drawWhiteKey: function (note) {
-    var key = $('<div class="white-key k-' + note + '"></div>');
+    var key = $('<div class="white-key" note="' + note + '"></div>');
     key.css('width', this.whiteKeyWidth);
     key.css('height', this.whiteKeyHeight);
     this.piano.append(key);
