@@ -9,8 +9,9 @@ var Piano = {
                     101, 103, 105, 107, 108],
 
   init: function () {
-    this.calculateDimensions();
+    this.loading = $('#loading');
     this.piano = $('#piano');
+    this.calculateDimensions();
 
     var self = this;
     MIDI.loadPlugin({
@@ -27,11 +28,10 @@ var Piano = {
     var availWidth = docWidth - padding;
 
     this.borderWidth = 2;
-    this.whiteKeyWidth = Math.floor(availWidth / this.WHITE_KEY_COUNT) - 2;
+    this.whiteKeyWidth = Math.floor(availWidth / this.WHITE_KEY_COUNT) - this.borderWidth;
     this.whiteKeyHeight = Math.floor(this.whiteKeyWidth * 4.5);
-    this.blackKeyWidth = this.whiteKeyWidth - this.borderWidth;
+    this.blackKeyWidth = this.whiteKeyWidth - 2;
     this.blackKeyHeight = Math.floor(this.whiteKeyHeight * 0.8);
-    this.blackKeyOffset = Math.floor(this.whiteKeyWidth / 2);
     this.padding = Math.floor(padding / 2);
   },
 
@@ -48,10 +48,11 @@ var Piano = {
     }, 200);
   },
 
-  drawBlackKey: function (note, adjacentKey) {
-    var offset = $(adjacentKey).offset();
+  drawBlackKey: function (note, adjacentKeyIndex) {
+    var offset = this.padding + (adjacentKeyIndex * this.whiteKeyWidth) +
+        (adjacentKeyIndex * this.borderWidth);
     var key = $('<div class="black-key" note="' + note + '"></div>');
-    key.css('left', (offset.left - this.padding + this.borderWidth + this.blackKeyOffset) + 'px');
+    key.css('left', (offset - this.whiteKeyWidth) + 'px');
     key.css('width', this.blackKeyWidth);
     key.css('height', this.blackKeyHeight);
     this.piano.append(key);
@@ -64,7 +65,6 @@ var Piano = {
     key.css('height', this.whiteKeyHeight);
     this.piano.append(key);
     key.click(this.playKey);
-    return key;
   },
 
   drawKeys: function () {
@@ -73,13 +73,16 @@ var Piano = {
 
     for (var i = 0; i < this.WHITE_KEY_COUNT; i++) {
       var note = this.WHITE_KEY_NOTES[i];
-      var key = this.drawWhiteKey(note);
+      this.drawWhiteKey(note);
   
       var nextWhiteNote = this.WHITE_KEY_NOTES[i+1];
       if (nextWhiteNote > note + 1) {
-        this.drawBlackKey(note + 1, key);
+        this.drawBlackKey(note + 1, i + 1);
       }
     }
+
+    this.loading.hide();
+    this.piano.show();
   }
 };
 
