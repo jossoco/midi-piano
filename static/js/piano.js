@@ -8,10 +8,11 @@ var Piano = {
                     83, 84, 86, 88, 89, 91, 93, 95, 96, 98, 100,
                     101, 103, 105, 107, 108],
 
-  init: function () {
+  init: function (song) {
     this.loading = $('#loading');
     this.piano = $('#piano');
     this.calculateDimensions();
+    this.song = song;
 
     var self = this;
     MIDI.loadPlugin({
@@ -83,9 +84,27 @@ var Piano = {
 
     this.loading.hide();
     this.piano.show();
+    this.playSong();
+  },
+
+  playSong: function () {
+    if (this.song) {
+      var self = this;
+      var i = 0;
+      var interval = setInterval(function () {
+        if (self.song[i]) {
+          var key = $('div[note="' + self.song[i] + '"]');
+          key.click();
+          i++;
+        }
+        if (i == self.song.length) {
+          clearInterval(interval);
+        }
+      }, 400);
+    }
   }
 };
 
 $(document).ready(function () {
-  Piano.init();
+  Piano.init(songs.mary);
 });
