@@ -71,10 +71,10 @@ var Piano = {
 
   drawWhiteKey: function (note) {
     var key = this.renderKey({
-        type: 'white',
-        note: note,
-        width: this.whiteKeyWidth,
-        height: this.whiteKeyHeight
+      type: 'white',
+      note: note,
+      width: this.whiteKeyWidth,
+      height: this.whiteKeyHeight
     });
     this.piano.append(key);
     key.click(this.playKey);
