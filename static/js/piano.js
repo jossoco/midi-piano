@@ -7,13 +7,20 @@ var Piano = {
                     62, 64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81,
                     83, 84, 86, 88, 89, 91, 93, 95, 96, 98, 100,
                     101, 103, 105, 107, 108],
+  TEMPLATE_URLS: {
+    PIANO: 'static/js/ejs/piano.ejs',
+    KEY: 'static/js/ejs/key.ejs'
+  },
 
   init: function () {
     this.loading = $('#loading');
-    this.piano = $('#piano');
     this.menu = $('#menu');
 
     this.calculateDimensions();
+    this.piano = this.renderPiano({
+      padding: this.padding
+    });
+    $('#main').append(this.piano);
 
     var self = this;
     MIDI.loadPlugin({
@@ -55,26 +62,29 @@ var Piano = {
   drawBlackKey: function (note, adjacentKeyIndex) {
     var offset = this.padding + (adjacentKeyIndex * this.whiteKeyWidth) +
          (adjacentKeyIndex * this.borderWidth) - Math.floor(this.blackKeyWidth / 2);
-    var key = $('<div class="black-key" note="' + note + '"></div>');
-    key.css('left', (offset - this.whiteKeyWidth) + 'px');
-    key.css('width', this.blackKeyWidth);
-    key.css('height', this.blackKeyHeight);
+    var key = this.renderKey({
+      type: 'black',
+      note: note,
+      left: offset - this.whiteKeyWidth,
+      width: this.blackKeyWidth,
+      height: this.blackKeyHeight
+    });
     this.piano.append(key);
     key.click(this.playKey);
   },
 
   drawWhiteKey: function (note) {
-    var key = $('<div class="white-key" note="' + note + '"></div>');
-    key.css('width', this.whiteKeyWidth);
-    key.css('height', this.whiteKeyHeight);
+    var key = this.renderKey({
+      type: 'white',
+      note: note,
+      width: this.whiteKeyWidth,
+      height: this.whiteKeyHeight
+    });
     this.piano.append(key);
     key.click(this.playKey);
   },
 
   drawKeys: function () {
-    this.piano.css('top', this.padding + 'px');
-    this.piano.css('left', this.padding + 'px');
-
     for (var i = 0; i < this.WHITE_KEY_COUNT; i++) {
       var note = this.WHITE_KEY_NOTES[i];
       this.drawWhiteKey(note);
@@ -121,6 +131,20 @@ var Piano = {
         }
       }, 350);
     }
+  },
+
+  renderTemplate: function (url, options) {
+    return $(new EJS({url: url}).render({
+      options: options
+    }));
+  },
+
+  renderPiano: function (options) {
+    return this.renderTemplate(this.TEMPLATE_URLS.PIANO, options);
+  },
+
+  renderKey: function (options) {
+    return this.renderTemplate(this.TEMPLATE_URLS.KEY, options);
   }
 };
 

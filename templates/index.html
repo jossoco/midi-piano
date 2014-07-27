@@ -10,20 +10,22 @@
  <script src="{{ url_for('static', filename='js/3p/Base64.js') }}" type="text/javascript"></script>
  <script src="{{ url_for('static', filename='js/3p/MIDI.js') }}" type="text/javascript"></script>
  <script src="{{ url_for('static', filename='js/3p/jquery-1.11.1.js') }}" type="text/javascript"></script>
+ <script src="{{ url_for('static', filename='js/3p/ejs_0.9_alpha_1_production.js') }}" type="text/javascript"></script>
 
  <script src="{{ url_for('static', filename='js/songs.js') }}" type="text/javascript"></script>
  <script src="{{ url_for('static', filename='js/piano.js') }}" type="text/javascript"></script>
 
 </head>
 <body>
-  <div id="piano"></div>
-  <div id="loading"></div>
-  <div id="menu">
-    <select id="songs-menu">
-      <option class="song-option" value="mary">Mary Had A Little Lamb</option>
-      <option class="song-option" value="birthday">Happy Birthday</option>
-    </select>
-    <button id="song-submit">Play Song</button>
+  <div id="main">
+    <div id="loading"></div>
+    <div id="menu">
+      <select id="songs-menu">
+        <option class="song-option" value="mary">Mary Had A Little Lamb</option>
+        <option class="song-option" value="birthday">Happy Birthday</option>
+      </select>
+      <button id="song-submit">Play Song</button>
+    </div>
   </div>
 </body>
 </html>
