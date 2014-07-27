@@ -8,11 +8,12 @@ var Piano = {
                     83, 84, 86, 88, 89, 91, 93, 95, 96, 98, 100,
                     101, 103, 105, 107, 108],
 
-  init: function (song) {
+  init: function () {
     this.loading = $('#loading');
     this.piano = $('#piano');
+    this.menu = $('#menu');
+
     this.calculateDimensions();
-    this.song = song;
 
     var self = this;
     MIDI.loadPlugin({
@@ -25,25 +26,27 @@ var Piano = {
 
   calculateDimensions: function () {
     var docWidth = $(document).width();
-    var padding = Math.floor(docWidth * 0.02);
-    var availWidth = docWidth - padding;
 
     this.borderWidth = 2;
-    this.whiteKeyWidth = Math.floor(availWidth / this.WHITE_KEY_COUNT) - this.borderWidth;
+    this.whiteKeyWidth = Math.floor(docWidth / this.WHITE_KEY_COUNT) - this.borderWidth;
     this.whiteKeyHeight = Math.floor(this.whiteKeyWidth * 4.5);
     this.blackKeyWidth = this.whiteKeyWidth - 2;
     this.blackKeyHeight = Math.floor(this.whiteKeyHeight * 0.8);
-    this.padding = Math.floor(padding / 2);
+
+    var pianoWidth = this.whiteKeyWidth * this.WHITE_KEY_COUNT +
+                     this.borderWidth + this.WHITE_KEY_COUNT * 2;
+    this.padding = Math.ceil((docWidth - pianoWidth) / 2);
   },
 
   playKey: function (event) {
-    $('.active').removeClass('active');
+    //$('.active').removeClass('active');
     var key = $(event.target);
     var keyNote = key.attr('note');
 
     key.addClass('active');
     MIDI.noteOn(0, parseInt(keyNote), 127, 0);
 
+    var self = this;
     setTimeout(function () {
       key.removeClass('active');
     }, 200);
@@ -51,7 +54,7 @@ var Piano = {
 
   drawBlackKey: function (note, adjacentKeyIndex) {
     var offset = this.padding + (adjacentKeyIndex * this.whiteKeyWidth) +
-        (adjacentKeyIndex * this.borderWidth);
+         (adjacentKeyIndex * this.borderWidth) - Math.floor(this.blackKeyWidth / 2);
     var key = $('<div class="black-key" note="' + note + '"></div>');
     key.css('left', (offset - this.whiteKeyWidth) + 'px');
     key.css('width', this.blackKeyWidth);
@@ -84,27 +87,43 @@ var Piano = {
 
     this.loading.hide();
     this.piano.show();
-    this.playSong();
+    this.showMenu();
+  },
+
+  showMenu: function () {
+    // Bind menu events
+    $('#song-submit').click($.proxy(this.playSong, this));
+
+    this.menu.css('top', this.whiteKeyHeight + this.padding + 10 + 'px');
+    this.menu.show();
   },
 
   playSong: function () {
-    if (this.song) {
-      var self = this;
+    var song = $('#songs-menu').val();
+    song = songs[song];
+
+    if (song) { 
       var i = 0;
-      var interval = setInterval(function () {
-        if (self.song[i]) {
-          var key = $('div[note="' + self.song[i] + '"]');
+      var interval = setInterval(function () { 
+        var note = song[i];
+        i++;
+        if (note && typeof(note) == 'number') {
+          var key = $('div[note="' + note + '"]');
           key.click();
-          i++;
-        }
-        if (i == self.song.length) {
+        } else if (note) {
+          var selectors = [];
+          for (var j = 0; j < note.length; j++) {
+            selectors.push('div[note="' + note[j] + '"]');
+            $(selectors.join(',')).click();
+          }
+        } else {
           clearInterval(interval);
         }
-      }, 400);
+      }, 350);
     }
   }
 };
 
 $(document).ready(function () {
-  Piano.init(songs.mary);
+  Piano.init(songs.birthday);
 });

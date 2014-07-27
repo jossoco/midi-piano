@@ -12,6 +12,11 @@
   width: 32px;
 }
 
+#menu {
+  display: none;
+  position: absolute;
+}
+
 .white-key {
   float: left;
   border: 1px solid #000;
