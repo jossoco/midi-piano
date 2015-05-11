@@ -6,5 +6,5 @@ Simple MIDI piano using [MIDI.js](https://github.com/mudcube/MIDI.js) and [Flask
 ## To Run
 ```
 > python setup.py install
-> python piano.js
+> python piano.py
 ```
